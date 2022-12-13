@@ -37,12 +37,31 @@ Contract collection on Opensea testnets:
 https://testnets.opensea.io/collection/wedis-h4v5lmgwc9
 
 
-## Background
+## Develop
 
-The longer format write-up for how to design a data dao using Tableland and Filecoin can be found here: [How to build a DAO owned filesystem with Tableland and Filecoin](https://textile.notion.site/How-to-build-a-DAO-owned-filesystem-with-Tableland-and-Filecoin-2e7c6e5dca704761b68e19c831a5ce55).
+You must have a `.env` file with the following information
 
-This repo contains the examples for how to structure the tables of metadata and build interfaces to read and modify those tables. 
+```
+PRIVATE_KEY={your wallet key with a balance of matic}
+POLYGONSCAN_API_KEY={your polyscan api key for pushing the abi}
+POLYGON_MUMBAI_API_KEY={your alchemy api key for mumbai}
+REPORT_GAS=true
+```
 
+### Install
+`npm install`
+
+### Start Tableland locally
+
+`npm run tableland`
+
+### Deploy to local hardhat
+
+`npm run local` or upgrade `npm run localup`
+
+### Deploy to Mumbai 
+
+`npm run deploy`
 
 # Warning
 
