@@ -233,7 +233,7 @@ contract Wedis is ERC721URIStorageUpgradeable,
             value,
             "') WHERE key=trim('",
             key,
-            "'))"
+            "')"
         );
         stored._tableland.runSQL(address(this), tokenId, statement);
     }

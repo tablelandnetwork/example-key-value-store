@@ -1,6 +1,7 @@
 {
   "name": "hardhat-project",
   "scripts": {
+    "tableland": "local-tableland",
     "compile": "hardhat compile",
     "local": "hardhat run --network localhost scripts/deploy.ts",
     "localup": "hardhat run --network localhost scripts/upgrade.ts",
