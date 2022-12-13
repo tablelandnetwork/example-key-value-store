@@ -229,9 +229,9 @@ contract Wedis is ERC721URIStorageUpgradeable,
         string memory statement = string.concat(
             "UPDATE ",
             stored.tokens[tokenId].table,
-            " SET value = trim('",
+            " SET v = trim('",
             value,
-            "') WHERE key=trim('",
+            "') WHERE k=trim('",
             key,
             "')"
         );
