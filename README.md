@@ -1,6 +1,8 @@
-# A Shared File System on Tableland & IPFS
+# Create a key value store using Tableland as the engine.
 
-A simple file manager UI running on top of a filesystem built with IPFS and Tableland.
+This is a novel ERC721 contract that wraps Tableland to provide novel functionality: a key value store. 
+
+It achieves this by allowing anyone to "mint" a new key value store. That store is a table on Tableland. The owner is allowed to update the table and grant permissions to other addresses to update. The scope of what they can do with the table (insert, update, delete key values) is defined by the smart contract. New KV are represented as novel NFTs owned by the original creator. 
 
 ## Overview
 
