@@ -14,12 +14,12 @@ async function main() {
   const impl = await upgrades.erc1967.getImplementationAddress(wedis.address);
   console.log("New implementation address:", impl);
 
-  console.log("running post deploy")
+  console.log("running post deploy");
   await wedis._initRegistry();
 
   writeFileSync(`./.${network.name}.env`, `CONTRACT=${wedis.address}`, "utf-8");
-  dotenv.config({path:`./.${network.name}.env`})
-  console.log(process.env.CONTRACT, "added")
+  dotenv.config({ path: `./.${network.name}.env` });
+  console.log(process.env.CONTRACT, "added");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

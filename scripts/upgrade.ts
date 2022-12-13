@@ -1,11 +1,11 @@
 import { ethers, upgrades, network } from "hardhat";
 import assert from "assert";
-import {config} from "dotenv";
+import { config } from "dotenv";
 
 async function main() {
   console.log(`\nUpgrading '${network.name}' proxy...`);
 
-  config({path:`./.${network.name}.env`})
+  config({ path: `./.${network.name}.env` });
 
   const proxy = process.env.CONTRACT;
 

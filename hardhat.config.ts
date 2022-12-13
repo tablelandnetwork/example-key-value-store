@@ -5,12 +5,11 @@ import { HardhatUserConfig, extendEnvironment, task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-ethers";
-import "@nomiclabs/hardhat-etherscan"
+import "@nomiclabs/hardhat-etherscan";
 import "@typechain/hardhat";
-import "hardhat-gas-reporter"
+import "hardhat-gas-reporter";
 import "solidity-coverage";
 import * as dotenv from "dotenv";
-
 
 dotenv.config();
 
@@ -25,7 +24,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   gasReporter: {
-    enabled: (process.env.REPORT_GAS) ? true : false,
+    enabled: process.env.REPORT_GAS ? true : false,
     currency: "USD",
   },
   networks: {
@@ -40,28 +39,25 @@ const config: HardhatUserConfig = {
         process.env.POLYGON_MUMBAI_API_KEY ?? ""
       }`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined
-          ? [process.env.PRIVATE_KEY]
-          : [],
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
   etherscan: {
-    apiKey: process.env.POLYGONSCAN_API_KEY
+    apiKey: process.env.POLYGONSCAN_API_KEY,
   },
   solidity: {
     version: "0.8.12",
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200
-      }
-    }
+        runs: 200,
+      },
+    },
   },
   proxies: {
-    localhost: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
-  }
-}
-
+    localhost: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+  },
+};
 
 declare module "hardhat/types/config" {
   // eslint-disable-next-line no-unused-vars

@@ -26,14 +26,17 @@ struct StoredData {
     mapping(uint256 => KV) tokens;
 }
 
-contract Wedis is ERC721URIStorageUpgradeable,
-  OwnableUpgradeable,
-  UUPSUpgradeable, ERC721HolderUpgradeable {
+contract Wedis is
+    ERC721URIStorageUpgradeable,
+    OwnableUpgradeable,
+    UUPSUpgradeable,
+    ERC721HolderUpgradeable
+{
     // An instance of the struct defined above.
     StoredData internal stored;
     string private _baseURIString;
 
-    function initialize() initializer public {
+    function initialize() public initializer {
         __ERC721URIStorage_init();
         __ERC721_init("Wedis", "wedis");
         __Ownable_init();
@@ -42,11 +45,11 @@ contract Wedis is ERC721URIStorageUpgradeable,
     }
 
     /**
-    * @dev Called when the smart contract is deployed. This function will create a table
-    * on the Tableland network that will contain a new row for every new project minted
-    * by a user of this smart contract.
-    */
-    function _initRegistry() external onlyOwner() returns (uint256 tokenId) {
+     * @dev Called when the smart contract is deployed. This function will create a table
+     * on the Tableland network that will contain a new row for every new project minted
+     * by a user of this smart contract.
+     */
+    function _initRegistry() external onlyOwner returns (uint256 tokenId) {
         // // require(stored._tableId == 0, "KV registry table already exists");
         // stored._tableland = ITablelandTables(registry);
         stored._tableland = TablelandDeployments.get();
@@ -78,10 +81,13 @@ contract Wedis is ERC721URIStorageUpgradeable,
     }
 
     /**
-    * @dev Called whenever a user requests a new key value store. 
-    */
-    function _createKV(address owner, string memory name) private returns (uint256 tokenId) {
-        // Create a new table for the senders key value store. 
+     * @dev Called whenever a user requests a new key value store.
+     */
+    function _createKV(
+        address owner,
+        string memory name
+    ) private returns (uint256 tokenId) {
+        // Create a new table for the senders key value store.
         // The owner of this table will be this smart contract (only one that can edit)
         tokenId = stored._tableland.createTable(
             address(this),
@@ -111,36 +117,56 @@ contract Wedis is ERC721URIStorageUpgradeable,
     }
 
     /**
-    * @dev Called whenever a user requests a new key value store. This stores the final
-    * table info in the single registry of all key-value stores.
-    */
-    function _insertKV(uint256 tokenId, address creator, string memory table, string memory name) internal {
+     * @dev Called whenever a user requests a new key value store. This stores the final
+     * table info in the single registry of all key-value stores.
+     */
+    function _insertKV(
+        uint256 tokenId,
+        address creator,
+        string memory table,
+        string memory name
+    ) internal {
         string memory tokenIdString = StringsUpgradeable.toString(tokenId);
         string memory creatorString = StringsUpgradeable.toHexString(creator);
         string memory nowString = StringsUpgradeable.toString(block.timestamp);
         /*
          * insert a single row for the registry metadata
          */
-        stored._tableland.runSQL(address(this), stored._tableId, string.concat(
-            "INSERT INTO ",
-            stored._table,
-            "(id, creator, created, table_name, name) VALUES (",
-            tokenIdString, ",'", creatorString, "',", nowString, ",'", table, "',trim('", name,
-            "'));"
-        ));
+        stored._tableland.runSQL(
+            address(this),
+            stored._tableId,
+            string.concat(
+                "INSERT INTO ",
+                stored._table,
+                "(id, creator, created, table_name, name) VALUES (",
+                tokenIdString,
+                ",'",
+                creatorString,
+                "',",
+                nowString,
+                ",'",
+                table,
+                "',trim('",
+                name,
+                "'));"
+            )
+        );
     }
 
     /**
-    * @dev Returns a table name for a tokenId
-    */
+     * @dev Returns a table name for a tokenId
+     */
     function getTable(uint256 tokenId) public view returns (string memory) {
         return stored.tokens[tokenId].table;
     }
 
     /**
-    * @dev Checks if an address has access to a token.
-    */
-    function hasAccessTo(uint256 tokenId, address from) public view returns (bool) {
+     * @dev Checks if an address has access to a token.
+     */
+    function hasAccessTo(
+        uint256 tokenId,
+        address from
+    ) public view returns (bool) {
         return stored.tokens[tokenId].grantees[from];
     }
 
@@ -152,35 +178,35 @@ contract Wedis is ERC721URIStorageUpgradeable,
     function addGrantee(uint256 tokenId, address to) private {
         stored.tokens[tokenId].grantees[to] = true;
     }
-    
+
     /**
-    * @dev Allows any key value owner to add a new owner.
-    */
+     * @dev Allows any key value owner to add a new owner.
+     */
     function grant(uint256 tokenId, address to) public {
-		_requireMinted(tokenId);
+        _requireMinted(tokenId);
         require(hasAccessTo(tokenId, msg.sender) == true, "Not authorized");
         addGrantee(tokenId, to);
     }
 
     /**
-    * @dev A wrapper for Tableland runSQL that will use our own ownership validation before
-    * executing the query. This works well because the owner of the token is this smart contract. Added for compatability with the CLI and SDK.
-    */
+     * @dev A wrapper for Tableland runSQL that will use our own ownership validation before
+     * executing the query. This works well because the owner of the token is this smart contract. Added for compatability with the CLI and SDK.
+     */
     function runSQL(
         address caller,
         uint256 tableId,
         string memory statement
     ) public {
-		_requireMinted(tableId);
+        _requireMinted(tableId);
         require(hasAccessTo(tableId, _msgSender()) == true, "Not authorized");
         stored._tableland.runSQL(address(this), tableId, statement);
     }
 
     /**
-    * @dev A test wrapper that will use "statement" to receive a tablename. 
-    * Added for compatability with the CLI and SDK, but uncertain if this will 
-    * work due to required parsing checks before calling createTable. 
-    */
+     * @dev A test wrapper that will use "statement" to receive a tablename.
+     * Added for compatability with the CLI and SDK, but uncertain if this will
+     * work due to required parsing checks before calling createTable.
+     */
     function createTable(
         address owner,
         string memory statement
@@ -191,18 +217,17 @@ contract Wedis is ERC721URIStorageUpgradeable,
         return tokenId;
     }
 
-
     /**
-    * @dev A helper method to add a new key value.
-    */
+     * @dev A helper method to add a new key value.
+     */
     function addKeyValue(
         string memory key,
         string memory value,
         uint256 tokenId
     ) public {
-		_requireMinted(tokenId);
+        _requireMinted(tokenId);
         require(hasAccessTo(tokenId, _msgSender()) == true, "Not authorized");
-        // Warning: SQL injection in this example would only allow the sender to do what they are allowed to do anyway. This may not be true in your usecase! 
+        // Warning: SQL injection in this example would only allow the sender to do what they are allowed to do anyway. This may not be true in your usecase!
         string memory statement = string.concat(
             "INSERT INTO ",
             stored.tokens[tokenId].table,
@@ -216,16 +241,16 @@ contract Wedis is ERC721URIStorageUpgradeable,
     }
 
     /**
-    * @dev A helper method to update a value for an existing key.
-    */
+     * @dev A helper method to update a value for an existing key.
+     */
     function updateValue(
         string memory key,
         string memory value,
         uint256 tokenId
     ) public {
-		_requireMinted(tokenId);
+        _requireMinted(tokenId);
         require(hasAccessTo(tokenId, _msgSender()) == true, "Not authorized");
-        // Warning: SQL injection in this example would only allow the sender to do what they are allowed to do anyway. This may not be true in your usecase! 
+        // Warning: SQL injection in this example would only allow the sender to do what they are allowed to do anyway. This may not be true in your usecase!
         string memory statement = string.concat(
             "UPDATE ",
             stored.tokens[tokenId].table,
@@ -239,19 +264,27 @@ contract Wedis is ERC721URIStorageUpgradeable,
     }
 
     /**
-    * @dev Allows a key-value store to be transfered. 
-    */
-    function safeTransferFrom(address from, address to, uint256 tokenId) override public {
-		_requireMinted(tokenId);
+     * @dev Allows a key-value store to be transfered.
+     */
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override {
+        _requireMinted(tokenId);
         changeOwner(tokenId, from, to);
         super.safeTransferFrom(from, to, tokenId);
     }
 
     /**
-    * @dev Allows a key-value store to be transfered. 
-    */
-    function transferFrom(address from, address to, uint256 tokenId) override public {
-		_requireMinted(tokenId);
+     * @dev Allows a key-value store to be transfered.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override {
+        _requireMinted(tokenId);
         changeOwner(tokenId, from, to);
         super.transferFrom(from, to, tokenId);
     }
@@ -262,29 +295,30 @@ contract Wedis is ERC721URIStorageUpgradeable,
         _safeMint(to, tokenId);
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        onlyOwner
-        override
-    {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 
-    function tokenURI(uint256 tokenId) public view override returns(string memory) {
-		_requireMinted(tokenId);
-		// Card memory card = tokenToCard[tokenId];
+    function tokenURI(
+        uint256 tokenId
+    ) public view override returns (string memory) {
+        _requireMinted(tokenId);
+        // Card memory card = tokenToCard[tokenId];
         string memory name = stored.tokens[tokenId].name;
         string memory strTokenId = StringsUpgradeable.toString(tokenId);
-		return string.concat(
-            'data:application/json,{"name":"',
-            name,
-            '","external_url":"https://testnet.tableland.network/chain/80001/tables/',
-            strTokenId,
-            '","image":"https://render.tableland.xyz/80001/',
-            strTokenId,
-            '","animation_url":"https://render.tableland.xyz/anim/?chain=80001\u0026id=',
-            strTokenId,
-            '","attributes":[{"display_type":"string","trait_type":"table","value":"',
-            stored.tokens[tokenId].table,
-            '"}]}'
-		);
-	}
+        return
+            string.concat(
+                'data:application/json,{"name":"',
+                name,
+                '","external_url":"https://testnet.tableland.network/chain/80001/tables/',
+                strTokenId,
+                '","image":"https://render.tableland.xyz/80001/',
+                strTokenId,
+                '","animation_url":"https://render.tableland.xyz/anim/?chain=80001\u0026id=',
+                strTokenId,
+                '","attributes":[{"display_type":"string","trait_type":"table","value":"',
+                stored.tokens[tokenId].table,
+                '"}]}'
+            );
+    }
 }

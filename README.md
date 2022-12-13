@@ -1,8 +1,8 @@
 # Create a key value store using Tableland as the engine.
 
-This is a novel ERC721 contract that wraps Tableland to provide novel functionality: a key value store. 
+This is a novel ERC721 contract that wraps Tableland to provide novel functionality: a key value store.
 
-It achieves this by allowing anyone to "mint" a new key value store. That store is a table on Tableland. The owner is allowed to update the table and grant permissions to other addresses to update. The scope of what they can do with the table (insert, update, delete key values) is defined by the smart contract. New KV are represented as novel NFTs owned by the original creator. 
+It achieves this by allowing anyone to "mint" a new key value store. That store is a table on Tableland. The owner is allowed to update the table and grant permissions to other addresses to update. The scope of what they can do with the table (insert, update, delete key values) is defined by the smart contract. New KV are represented as novel NFTs owned by the original creator.
 
 ## Overview
 
@@ -19,23 +19,22 @@ Use the `safeMint` function. `address` should be your wallet address. `name` is 
 
 #### Insert a new value in the KV
 
-Use the `runSQL` method to send full SQL statements. 
+Use the `runSQL` method to send full SQL statements.
 
-Or, use the `addKeyValue` method and `updateValue` methods to insert and update key values. 
+Or, use the `addKeyValue` method and `updateValue` methods to insert and update key values.
 
 #### Add new writers to your KV stores
 
-Use the `grant` method to grant write access to any KV store to a new address. You can now instantly collaborate on the same KV store. 
+Use the `grant` method to grant write access to any KV store to a new address. You can now instantly collaborate on the same KV store.
 
 #### Connect with the Tableland SDK and CLI
 
-You can connect directly to this contract with the SDK and CLI by specifying the contract address. That will allow you to create new KV stores or update values from your code easily. 
+You can connect directly to this contract with the SDK and CLI by specifying the contract address. That will allow you to create new KV stores or update values from your code easily.
 
 ## Tokens generated
 
 Contract collection on Opensea testnets:
 https://testnets.opensea.io/collection/wedis-h4v5lmgwc9
-
 
 ## Develop
 
@@ -49,6 +48,7 @@ REPORT_GAS=true
 ```
 
 ### Install
+
 `npm install`
 
 ### Start Tableland locally
@@ -59,7 +59,7 @@ REPORT_GAS=true
 
 `npm run local` or upgrade `npm run localup`
 
-### Deploy to Mumbai 
+### Deploy to Mumbai
 
 `npm run deploy`
 

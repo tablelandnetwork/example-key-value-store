@@ -9,7 +9,9 @@
     "_deploy": "hardhat run --network polygon_mumbai scripts/deploy.ts",
     "upgrade": "npm run _upgrade && npm run verify",
     "_upgrade": "hardhat run --network polygon_mumbai scripts/upgrade.ts",
-    "verify": "source .polygon_mumbai.env && hardhat verify $CONTRACT --network polygon_mumbai"
+    "verify": "source .polygon_mumbai.env && hardhat verify $CONTRACT --network polygon_mumbai",
+    "prettier": "prettier '**/*.{ts,json,sol,md}' --check",
+    "prettier:fix": "npm run prettier -- --write"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "2.0.0",
@@ -23,6 +25,8 @@
     "erc721a-upgradeable": "4.2.3",
     "hardhat": "2.12.4",
     "hardhat-gas-reporter": "1.0.9",
+    "prettier": "2.8.1",
+    "prettier-plugin-solidity": "1.1.0",
     "solidity-coverage": "0.8.2"
   }
 }
